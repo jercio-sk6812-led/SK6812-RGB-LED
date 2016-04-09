@@ -39,9 +39,9 @@ int main(void)
 	char tick = 0;
 	
 	// color flow table
-	//char color_flow[16] = {0, 8, 16, 32, 128, 235, 255, 235, 128, 32, 16, 8, 4, 2, 1, 0};
 	char color_flow[16];
 	
+	// generate the color pattern for one color
 	for (unsigned char x = 0; x < 8; x++)
 	{
 		color_flow[x] = x * 2;
@@ -55,25 +55,24 @@ int main(void)
 	while(1)
 	{
 	
-	_delay_ms(70);
-	tick++;
+		_delay_ms(70);
+		tick++;
 	
-	// create array with the colors
-	for (unsigned char led = 0; led < leds_count; led++)
-		for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
-			RGB[led * 3 + c_idx] = color_flow[(led * 3 + c_idx * 11 + tick) & 0xf];
+		// create array with the colors
+		for (unsigned char led = 0; led < leds_count; led++)
+			for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
+				RGB[led * 3 + c_idx] = color_flow[(led * 3 + c_idx * 11 + tick) & 0xf];
 	
-	// send color-array to the leds
-	for (unsigned char led = 0; led < leds_count; led++)
-		for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
-		{
-			bit_shift = RGB[c_idx + led * 3];
-			for (unsigned char x = 0; x < 8; x++)
+		// send color-array to the leds
+		for (unsigned char led = 0; led < leds_count; led++)
+			for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
 			{
-				send_bit(bit_shift & 0x80);
-				bit_shift = bit_shift << 1;
+				bit_shift = RGB[c_idx + led * 3];
+				for (unsigned char x = 0; x < 8; x++)
+				{
+					send_bit(bit_shift & 0x80);
+					bit_shift = bit_shift << 1;
+				}
 			}
-		}
-
 	}
 }
