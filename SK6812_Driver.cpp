@@ -33,37 +33,42 @@ inline void send_bit(char c)
 int main(void)
 {
 	DDRD = 0x80;					// PORTD.7 = Output
-	const char leds_count = 12;		// Ring with 12 LEDs
-	char RGB[leds_count * 3];		// Array with 12 LEDs * 3 Colors
+	const char leds_count = 12;		// Ring with x LEDs
+	char RGB[leds_count * 3];		// Array with x LEDs * 3 Colors
 	char bit_shift;					// char for bit shifting
 	char tick = 0;
 	
 	// color flow table
-	char color_flow[16] = {1, 32, 64, 128, 196, 235, 255, 235, 196, 128, 64, 32, 16, 8, 4, 1};
+	//char color_flow[16] = {0, 8, 16, 32, 128, 235, 255, 235, 128, 32, 16, 8, 4, 2, 1, 0};
+	char color_flow[16];
 	
-	// reset the leds before sending the data
+	for (unsigned char x = 0; x < 8; x++)
+	{
+		color_flow[x] = x * 2;
+		color_flow[15-x] = x * 2;
+	}
+	
+	// reset the led controller before sending the data
 	PORTD = 0;
 	_delay_us(50);
 	
 	while(1)
 	{
 	
-	_delay_ms(50);
+	_delay_ms(70);
 	tick++;
 	
 	// create array with the colors
-	for (char led = 0; led < leds_count; led++)
-		for (char c_idx = 0; c_idx < 3; c_idx++)
-		{
-			RGB[led * 3 + c_idx] = color_flow[(led*3 + c_idx * 5 + tick) & 0x0f];
-		}
+	for (unsigned char led = 0; led < leds_count; led++)
+		for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
+			RGB[led * 3 + c_idx] = color_flow[(led * 3 + c_idx * 11 + tick) & 0xf];
 	
 	// send color-array to the leds
-	for (char led = 0; led < leds_count; led++)
-		for (char c_idx = 0; c_idx < 3; c_idx++)
+	for (unsigned char led = 0; led < leds_count; led++)
+		for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
 		{
 			bit_shift = RGB[c_idx + led * 3];
-			for (char x = 0; x < 8; x++)
+			for (unsigned char x = 0; x < 8; x++)
 			{
 				send_bit(bit_shift & 0x80);
 				bit_shift = bit_shift << 1;
