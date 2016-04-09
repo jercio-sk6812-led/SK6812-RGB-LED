@@ -12,6 +12,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+// time-crirital, therefore "inline"...
 inline void send_bit(char c)
 {
 	if (c == 0)
@@ -38,10 +39,10 @@ int main(void)
 	char bit_shift;					// char for bit shifting
 	char tick = 0;
 	
-	// color flow table
+	// (empty) color flow table
 	char color_flow[16];
 	
-	// generate the color pattern for one color
+	// fill the color pattern for one color
 	for (unsigned char x = 0; x < 8; x++)
 	{
 		color_flow[x] = x * 2;
@@ -54,7 +55,7 @@ int main(void)
 	
 	while(1)
 	{
-	
+		// "animation" should not run too fast for the human eye, therefore delay it...
 		_delay_ms(70);
 		tick++;
 	
