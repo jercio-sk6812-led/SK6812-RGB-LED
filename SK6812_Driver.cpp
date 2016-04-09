@@ -17,16 +17,16 @@ inline void send_bit(char c)
 	if (c == 0)
 	{
 		PORTD = 0x80;
-		_delay_us(0.10);	// actually: 0.3탎
+		_delay_us(0.15);	// actually: 0.3탎
 		PORTD = 0x00;
-		_delay_us(0.30);	// actually: 0.9탎
+		_delay_us(0.45);	// actually: 0.9탎
 	}
 	else
 	{
 		PORTD = 0x80;
-		_delay_us(0.2);		// actually: 0.6탎
+		_delay_us(0.30);		// actually: 0.6탎
 		PORTD = 0x00;
-		_delay_us(0.2);		// actually: 0.6탎
+		_delay_us(0.30);		// actually: 0.6탎
 	}
 }
 
@@ -36,20 +36,27 @@ int main(void)
 	const char leds_count = 12;		// Ring with 12 LEDs
 	char RGB[leds_count * 3];		// Array with 12 LEDs * 3 Colors
 	char bit_shift;					// char for bit shifting
+	char tick = 0;
 	
 	// color flow table
 	char color_flow[16] = {1, 32, 64, 128, 196, 235, 255, 235, 196, 128, 64, 32, 16, 8, 4, 1};
+	
+	// reset the leds before sending the data
+	PORTD = 0;
+	_delay_us(50);
+	
+	while(1)
+	{
+	
+	_delay_ms(50);
+	tick++;
 	
 	// create array with the colors
 	for (char led = 0; led < leds_count; led++)
 		for (char c_idx = 0; c_idx < 3; c_idx++)
 		{
-			RGB[led * 3 + c_idx] = color_flow[(led*3 + c_idx * 5) & 0x0f];
+			RGB[led * 3 + c_idx] = color_flow[(led*3 + c_idx * 5 + tick) & 0x0f];
 		}
-	
-	// reset the leds before sending the data
-	PORTD = 0;
-	_delay_us(50);
 	
 	// send color-array to the leds
 	for (char led = 0; led < leds_count; led++)
@@ -63,8 +70,5 @@ int main(void)
 			}
 		}
 
-	// we are done, do nothing till the end of time
-	while(1)
-	{
 	}
 }
