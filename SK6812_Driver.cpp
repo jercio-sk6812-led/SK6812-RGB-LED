@@ -42,16 +42,16 @@ int main(void)
 	// (empty) color flow table
 	char color_flow[64];
 	
-	// fill the color pattern for one color
-	for (unsigned char x = 0; x < 24; x++)
+	// set all to 1, because next part only set 2/3 of the color flow table
+	for (unsigned char x = 0; x < 64; x++)
+		color_flow[x] = 1;
+
+	// create the color pattern for one color
+	for (unsigned char x = 0; x < 22; x++)
 	{
 		color_flow[x] = 1 + (x << 1);
-		color_flow[47-x] = 1 + (x << 1);
+		color_flow[43-x] = 1 + (x << 1);
 	}
-	
-	// reset the led controller before sending the data
-	PORTD = 0;
-	_delay_us(50);
 	
 	while(1)
 	{
