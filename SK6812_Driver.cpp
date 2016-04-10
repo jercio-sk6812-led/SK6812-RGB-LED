@@ -62,7 +62,7 @@ int main(void)
 		// create array with the colors
 		for (unsigned char led = 0; led < leds_count; led++)
 			for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
-				RGB[led * 3 + c_idx] = color_flow[(led * 3 + c_idx * 11 + tick) & 0xf];
+				RGB[led * 3 + c_idx] = color_flow[(led * 2 + c_idx * 5 + tick) & 0xf];
 	
 		// send color-array to the leds
 		for (unsigned char led = 0; led < leds_count; led++)
