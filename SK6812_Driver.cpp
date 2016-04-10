@@ -40,13 +40,13 @@ int main(void)
 	char tick = 0;
 	
 	// (empty) color flow table
-	char color_flow[16];
+	char color_flow[64];
 	
 	// fill the color pattern for one color
-	for (unsigned char x = 0; x < 8; x++)
+	for (unsigned char x = 0; x < 24; x++)
 	{
-		color_flow[x] = x * 2;
-		color_flow[15-x] = x * 2;
+		color_flow[x] = 1 + (x << 1);
+		color_flow[47-x] = 1 + (x << 1);
 	}
 	
 	// reset the led controller before sending the data
@@ -56,13 +56,13 @@ int main(void)
 	while(1)
 	{
 		// "animation" should not run too fast for the human eye, therefore delay it...
-		_delay_ms(70);
+		_delay_ms(50);
 		tick++;
 	
 		// create array with the colors
 		for (unsigned char led = 0; led < leds_count; led++)
 			for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
-				RGB[led * 3 + c_idx] = color_flow[(led * 2 + c_idx * 5 + tick) & 0xf];
+				RGB[led * 3 + c_idx] = color_flow[(led * 12 + c_idx * 16 + tick) & 0x3f];
 	
 		// send color-array to the leds
 		for (unsigned char led = 0; led < leds_count; led++)
