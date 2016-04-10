@@ -47,10 +47,11 @@ int main(void)
 		color_flow[x] = 1;
 
 	// create the color pattern for one color
-	for (unsigned char x = 0; x < 22; x++)
+	for (unsigned char x = 0; x < 16; x++)
 	{
 		color_flow[x] = 1 + (x << 1);
-		color_flow[43-x] = 1 + (x << 1);
+		color_flow[x+15] = 31;
+		color_flow[x+31] = 32 - (x << 1);
 	}
 	
 	while(1)
@@ -62,7 +63,7 @@ int main(void)
 		// create array with the colors
 		for (unsigned char led = 0; led < leds_count; led++)
 			for (unsigned char c_idx = 0; c_idx < 3; c_idx++)
-				RGB[led * 3 + c_idx] = color_flow[(led * 12 + c_idx * 16 + tick) & 0x3f];
+				RGB[led * 3 + c_idx] = color_flow[(led * 6 + c_idx * 24 + tick) & 0x3f];
 	
 		// send color-array to the leds
 		for (unsigned char led = 0; led < leds_count; led++)
